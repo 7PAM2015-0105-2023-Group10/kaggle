@@ -1,0 +1,74 @@
+train_data['Transported'].value_counts(normalize=True)
+The class distribution in your Transported column with 4378 instances of True and 4315 of False is not considered imbalanced. An imbalanced class typically refers to a situation where the number of instances of one class is significantly smaller than the other classes within the dataset.
+
+In the context of binary classification, where there are only two classes, imbalance would generally be something that is quite skewed, like having 90% of the data in one class and 10% in the other. In your case, the classes are almost equally represented, so this would not be considered an imbalance.
+
+from sklearn.preprocessing import LabelEncoder
+
+
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+
+train_data['HomePlanet']= label_encoder.fit_transform(train_data['HomePlanet'])
+train_data['Destination']= label_encoder.fit_transform(train_data['Destination'])
+train_data['CryoSleep']= label_encoder.fit_transform(train_data['CryoSleep'])
+train_data['Transported']= label_encoder.fit_transform(train_data['Transported'])
+train_data['VIP']= label_encoder.fit_transform(train_data['VIP'])
+train_data['CabinDeck']= label_e
+
+# Encode labels in column in test data
+test_data['HomePlanet']= label_encoder.fit_transform(test_data['HomePlanet'])
+test_data['Destination']= label_encoder.fit_transform(test_data['Destination'])
+test_data['CryoSleep']= label_encoder.fit_transform(test_data['CryoSleep'])
+test_data['VIP']= label_encoder.fit_transform(test_data['VIP'])
+test_data['CabinDeck']= label_encoder.fit_transform(test_data['CabinDeck'])
+test_data['AgeGroup']= label_encoder.fit_transform(test_data['AgeGroup'])
+test_data['CabinSide']= label_encoder.fit_transform(test_data['CabinSide'])
+
+train_data.head()
+
+
+Normalization
+
+#split X and Y
+X = train_data.drop("Transported", axis=1)
+y = train_data["Transported"]
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+x_train.shape, x_test.shape, y_train.shape, y_test.shape
+
+((6954, 15), (1739, 15), (6954,), (1739,))
+
+ML Models
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+from lightgbm import LGBMClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score
+
+LogisticRegressionModel = LogisticRegression(penalty='l2',solver='sag',C=1.0)
+LogisticRegressionModel.fit(x_train, y_train)
+
+#Calculating Prediction
+y_pred = LogisticRegressionModel.predict(x_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+Accuracy: 0.7699827487061529
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+from lightgbm import LGBMClassifier
+
+models_and_params = {
+    LogisticRegression: {
+        'penalty': ['l2'],
+        'C': [0.1, 1.0, 10.0],
+        'solver': ['liblinear', 'saga'],
